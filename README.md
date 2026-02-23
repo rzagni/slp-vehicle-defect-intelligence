@@ -4,7 +4,7 @@ An interactive Streamlit application for analyzing NHTSA vehicle complaint data 
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.12
 - [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods)
 - OpenAI API key
 
@@ -123,4 +123,5 @@ slp-vehicle-defect-intelligence/
 ## License
 
 Add your project license information here.
+
 
