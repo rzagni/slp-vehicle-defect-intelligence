@@ -103,7 +103,11 @@ The app will open in your browser (typically at `http://localhost:8501`).
 slp-vehicle-defect-intelligence/
 │
 ├── app.py
+├── analysis.py
+├── nhtsa_client.py
+├── analysis.py
 ├── convert_to_parquet.py
+├── uv.lock
 ├── db/
 ├── .env
 ├── .venv/
@@ -119,3 +123,4 @@ slp-vehicle-defect-intelligence/
 ## License
 
 Add your project license information here.
+
