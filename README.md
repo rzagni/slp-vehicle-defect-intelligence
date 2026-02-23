@@ -26,7 +26,7 @@ cd slp-vehicle-defect-intelligence
 ### 3. Create Virtual Environment & Install Dependencies
 
 ```bash
-uv init
+uv sync
 ```
 
 This creates a `.venv` directory and installs dependencies.
@@ -123,5 +123,6 @@ slp-vehicle-defect-intelligence/
 ## License
 
 Add your project license information here.
+
 
 
