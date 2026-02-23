@@ -120,9 +120,78 @@ slp-vehicle-defect-intelligence/
 - Confirm your `.env` file contains a valid `OPENAI_API_KEY`.
 - Make sure your virtual environment is activated before running the app.
 
-## License
-
-Add your project license information here.
+---
 
 
+# Architecture, Tradeoffs & Future Enhancements
 
+## Overview
+
+This prototype was built to help attorneys rapidly assess vehicle defect patterns, complaint severity, recall history, and similar case signals using publicly available NHTSA data. The design prioritizes functional completeness and clarity within an 8-hour MVP constraint while maintaining a clear path to production scalability. 
+
+## Data Storage Strategy
+
+For the MVP, the NHTSA complaints flat file was converted into a local **Parquet dataset** and loaded using Streamlit caching.
+
+**Why Parquet:**
+- Columnar format improves filtering performance
+- Faster load times than raw text
+- Smaller memory footprint than CSV
+- Simple local deployment without infrastructure
+
+The dataset is loaded once and filtered dynamically by make/model/year during vehicle analysis.
+
+### Tradeoff
+
+This approach is efficient for local prototyping but not ideal for production-scale usage. Since the dataset is loaded into memory, it assumes a single-user environment and limited concurrency.
+
+In a production system, this would be replaced with:
+
+- PostgreSQL for structured filtering
+- Indexed queries for performance
+- Cloud-hosted storage for scalability
+
+## Semantic Search Architecture
+
+Semantic search is implemented using OpenAI embeddings (`text-embedding-3-small`) and cosine similarity.
+
+### Current Design
+
+- Complaint summaries are embedded when a vehicle is analyzed
+- Embeddings are cached per vehicle session
+- Semantic similarity is computed in-memory using NumPy
+
+This allows attorneys to search complaints by symptom description (e.g., “transmission slipping at highway speed”).
+
+### Tradeoff
+
+Embeddings are not persisted and are regenerated per vehicle session. This approach is appropriate for an MVP but would not scale to high traffic or cross-vehicle analysis.
+
+### Production Upgrade Path
+
+A scalable version would:
+
+- Precompute embeddings
+- Store them in a vector database (e.g., pgvector, Pinecone, FAISS)
+- Enable indexed semantic search across all vehicles
+- Reduce API calls and latency
+
+## Case Strength Scoring
+
+The MVP includes a configurable heuristic-based case strength score derived from:
+
+- Number of injuries
+- Crashes
+- Fires
+- Deaths
+- Total complaint volume
+
+Example structure:
+
+```python
+case_strength_score =
+    (weight_injuries × injuries) +
+    (weight_crashes × crashes) +
+    (weight_fires × fires) +
+    (weight_deaths × deaths) +
+    (weight_volume × total_complaints)
